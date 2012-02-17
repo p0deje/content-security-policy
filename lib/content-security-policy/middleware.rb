@@ -17,18 +17,25 @@ class ContentSecurityPolicy
     @directives = directives || ContentSecurityPolicy.directives
 
     @directives or raise NoDirectivesError, 'No directives were passed.'
-    @directives['default-src'] or raise NoDefaultSrcError, 'You have to set default-src directive.'
+
+    # make sure directives with policy-uri don't contain any other directives
+    if @directives['policy-uri'] && @directives.keys.length > 1
+      raise IncorrectDirectivesError, 'You passed both policy-uri and other directives.'
+    # make sure default-src is present
+    elsif !@directives['policy-uri'] && !@directives['default-src']
+      raise IncorrectDirectivesError, 'You have to set default-src directive.'
+    end
   end
 
   #
-  # @api
+  # @api private
   #
   def call(env)
     dup._call(env)
   end
 
   #
-  # @api
+  # @api private
   #
   def _call(env)
     status, headers, response = @app.call(env)

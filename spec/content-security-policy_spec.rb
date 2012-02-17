@@ -4,11 +4,11 @@ describe ContentSecurityPolicy do
 
   context 'configuration' do
     let(:app) do
-      [200, { 'Content-Type' => 'text/plain' }, ['ok']]
+      [200, { 'Content-Type' => 'text/plain' }, %w(ok)]
     end
 
     describe '#initialize' do
-      it 'should raise error if directives hash is not passed' do
+      it 'should raise error if directives hash is not present' do
         lambda do
           ContentSecurityPolicy.new(app)
         end.should raise_error(ContentSecurityPolicy::NoDirectivesError, 'No directives were passed.')
@@ -17,7 +17,13 @@ describe ContentSecurityPolicy do
       it 'should raise error if default-src was not set' do
         lambda do
           ContentSecurityPolicy.new(app, 'script-src' => "'self'")
-        end.should raise_error(ContentSecurityPolicy::NoDefaultSrcError, 'You have to set default-src directive.')
+        end.should raise_error(ContentSecurityPolicy::IncorrectDirectivesError, 'You have to set default-src directive.')
+      end
+
+      it 'should raise error if both policy-uri and other directive was set' do
+        lambda do
+          ContentSecurityPolicy.new(app, 'policy-uri' => 'policy.xml', 'script-src' => "'self'")
+        end.should raise_error(ContentSecurityPolicy::IncorrectDirectivesError, "You passed both policy-uri and other directives.")
       end
 
       it 'should allow setting directives with ContentSecurityPolicy.configure' do
@@ -60,7 +66,7 @@ describe ContentSecurityPolicy do
     let(:app) do
       Rack::Builder.app do
         use ContentSecurityPolicy
-        run lambda { |env| [200, {'Content-Type' => 'text/plain'}, ['ok']] }
+        run lambda { |env| [200, {'Content-Type' => 'text/plain'}, %w(ok)] }
       end
     end
 
