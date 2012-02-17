@@ -9,11 +9,8 @@ Gem::Specification.new do |s|
   s.email  = 'p0deje@gmail.com'
 
   s.homepage    = 'https://github.com/p0deje/content-security-policy'
-  s.summary     = 'Content Security Policy for Rack'
-  s.description = <<-EOF
-    Implementation of Content Security Policy as Rack middleware.
-    More information about Content Security Policy - http://http://www.w3.org/TR/CSP/.
-  EOF
+  s.summary     = 'Full-featured Content Security Policy as Rack middleware'
+  s.description = 'Full-featured Content Security Policy as Rack middleware'
 
   s.files       = `git ls-files`.split("\n")
   s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
@@ -27,4 +24,3 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rake'
 end
-
