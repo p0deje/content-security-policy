@@ -1,4 +1,6 @@
-## Description
+## Content Security Policy
+
+[![Build Status](http://travis-ci.org/p0deje/content-security-policy.png)](http://travis-ci.org/p0deje/content-security-policy)
 
 Implementation of Content Security Policy as Rack middleware.
 
