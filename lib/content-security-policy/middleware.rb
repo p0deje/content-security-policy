@@ -41,7 +41,7 @@ class ContentSecurityPolicy
     status, headers, response = @app.call(env)
 
     # flatten directives
-    directives = @directives.map { |k, v| "#{k} #{v}" }.join('; ')
+    directives = @directives.sort.map { |dir| "#{dir[0]} #{dir[1]}" }.join('; ')
     # append response headers
     headers['X-Content-Security-Policy'] = directives
     headers['X-WebKit-CSP']              = directives

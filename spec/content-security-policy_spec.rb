@@ -80,12 +80,12 @@ describe ContentSecurityPolicy do
 
     describe '#call' do
       it 'should respond with X-Content-Security-Policy HTTP response header' do
-        directives = "default-src *; script-src 'self'; img-src *.google.com"
+        directives = "default-src *; img-src *.google.com; script-src 'self'"
         get('/').headers['X-Content-Security-Policy'].should == directives
       end
 
       it 'should respond with X-WebKit-CSP HTTP response header' do
-        directives = "default-src *; script-src 'self'; img-src *.google.com"
+        directives = "default-src *; img-src *.google.com; script-src 'self'"
         get('/').headers['X-WebKit-CSP'].should == directives
       end
     end
