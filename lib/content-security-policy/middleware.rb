@@ -1,20 +1,26 @@
 class ContentSecurityPolicy
 
+  # @attr_reader [Boolean] use in report only mode
+  attr_reader :report_only
+
   # @attr_reader [Hash] directives hash
   attr_reader :directives
 
   #
   # Initializes Content Security Policy middleware.
   #
-  # @param [Hash] directives
+  # @param [Hash] opts Options hash
+  # @option [Boolean] :report_only Set to true if use in report-only mode
+  # @option [Hash] :directives Directives
   #
-  # You can pass directives hash directly on middleware usage.
   # @example
-  #   use ContentSecurityPolicy, 'default-src' => "'self'"
+  #   use ContentSecurityPolicy, :directives => { 'default-src' => "'self'" }
+  #   use ContentSecurityPolicy, :directives => { 'default-src' => "'self'", :report_only => true }
   #
-  def initialize(app, directives = nil)
+  def initialize(app, options = {})
     @app = app
-    @directives = directives || ContentSecurityPolicy.directives
+    @report_only = options[:report_only] || ContentSecurityPolicy.report_only
+    @directives = options[:directives] || ContentSecurityPolicy.directives
 
     @directives or raise NoDirectivesError, 'No directives were passed.'
 
@@ -42,9 +48,18 @@ class ContentSecurityPolicy
 
     # flatten directives
     directives = @directives.sort.map { |dir| "#{dir[0]} #{dir[1]}" }.join('; ')
-    # append response headers
-    headers['X-Content-Security-Policy'] = directives
-    headers['X-WebKit-CSP']              = directives
+
+    # prepare response headers names
+    if @report_only
+      resp_headers = %w(X-Content-Security-Policy-Report-Only X-WebKit-CSP-Report-Only)
+    else
+      resp_headers = %w(X-Content-Security-Policy X-WebKit-CSP)
+    end
+
+    # append response header
+    resp_headers.each do |resp_header|
+      headers[resp_header] = directives
+    end
 
     [status, headers, response]
   end

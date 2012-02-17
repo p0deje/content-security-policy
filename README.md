@@ -12,10 +12,9 @@ Install as usually `gem install content-security-policy`
 
 ## Usage
 
-Add Content Security Policy to your Rack configuration.
+Add Content Security Policy to your Rack configuration `config.ru`.
 
 ```ruby
-# config.ru
 require 'content-security-policy'
 
 ContentSecurityPolicy.configure do |csp|
@@ -24,18 +23,43 @@ ContentSecurityPolicy.configure do |csp|
 end
 
 use ContentSecurityPolicy
-run MyApp
+run MyApplication
 ```
 
-or you can pass directives during initialization
+You can also pass directives during initialization.
 
 ```ruby
-# config.ru
 require 'content-security-policy'
 
-use ContentSecurityPolicy, 'policy-uri' => 'policy.xml'
+use ContentSecurityPolicy, :directives => { 'policy-uri' => 'policy.xml' }
+run App
+```
+
+You can also use report-only mode.
+
+```ruby
+require 'content-security-policy'
+
+ContentSecurityPolicy.configure do |csp|
+  csp.report_only = true
+  csp['default-src'] = "'self'"
+  csp['script-src']  = '*.example.com'
+end
+
+use ContentSecurityPolicy
 run MyApp
 ```
+
+```ruby
+require 'content-security-policy'
+
+use ContentSecurityPolicy, :directives => { 'policy-uri' => 'policy.xml' }, :report_only => true
+run MyApp
+```
+
+## Status
+
+Content Security Policy is now implemented with `X-Content-Security-Policy` and `X-WebKit-CSP` headers.
 
 ## Copyright
 
