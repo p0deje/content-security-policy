@@ -37,4 +37,4 @@ run MyApp
 
 ## Copyright
 
-Copyright (c) 2012 Alex Rodionov. See LICENSE for details.
+Copyright (c) 2012 Alexey Rodionov. See LICENSE for details.
