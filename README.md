@@ -32,7 +32,7 @@ You can also pass directives during initialization.
 require 'content-security-policy'
 
 use ContentSecurityPolicy, :directives => { 'policy-uri' => 'policy.xml' }
-run App
+run MyApplication
 ```
 
 You can also use report-only mode.
@@ -47,14 +47,14 @@ ContentSecurityPolicy.configure do |csp|
 end
 
 use ContentSecurityPolicy
-run MyApp
+run MyApplication
 ```
 
 ```ruby
 require 'content-security-policy'
 
 use ContentSecurityPolicy, :directives => { 'policy-uri' => 'policy.xml' }, :report_only => true
-run MyApp
+run MyApplication
 ```
 
 ## Status
