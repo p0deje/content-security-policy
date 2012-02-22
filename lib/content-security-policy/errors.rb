@@ -4,4 +4,3 @@ class ContentSecurityPolicy
   class IncorrectDirectivesError < StandardError; end
 
 end # ContentSecurityPolicy
-

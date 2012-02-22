@@ -43,4 +43,3 @@ class ContentSecurityPolicy
 
   end # << self
 end # ContentSecurityPolicy
-
