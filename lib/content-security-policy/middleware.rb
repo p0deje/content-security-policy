@@ -1,21 +1,21 @@
 class ContentSecurityPolicy
 
-  # @attr_reader [Boolean] use in report only mode
+  # @attr_reader [Boolean] report_only Use in report only mode
   attr_reader :report_only
 
-  # @attr_reader [Hash] directives hash
+  # @attr_reader [Hash] directives Directives hash
   attr_reader :directives
 
   #
   # Initializes Content Security Policy middleware.
   #
-  # @param [Hash] opts Options hash
-  # @option [Boolean] :report_only Set to true if use in report-only mode
-  # @option [Hash] :directives Directives
+  # @param [Hash] options Options hash
+  # @option options [Boolean] :report_only Set to true if use in report-only mode
+  # @option options [Hash] :directives Directives hash
   #
   # @example
   #   use ContentSecurityPolicy, :directives => { 'default-src' => "'self'" }
-  #   use ContentSecurityPolicy, :directives => { 'default-src' => "'self'", :report_only => true }
+  #   use ContentSecurityPolicy, :directives => { 'default-src' => "'self'" }, :report_only => true
   #
   def initialize(app, options = {})
     @app = app

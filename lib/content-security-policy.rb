@@ -5,9 +5,10 @@ require 'content-security-policy/version'
 class ContentSecurityPolicy
   class << self
 
-    # @attr_accessor [Boolean] use in report only mode
+    # @attr [Boolean] report_only Use in report only mode
     attr_accessor :report_only
-    # @attr_reader [Hash] directives hash
+
+    # @attr_reader [Hash] directives Directives hash
     attr_reader :directives
 
     #
@@ -23,7 +24,7 @@ class ContentSecurityPolicy
     #   end
     #   use ContentSecurityPolicy
     #
-    # @yield [self]
+    # @yield [ContentSecurityPolicy]
     #
     def configure(&blk)
       @directives ||= {}
