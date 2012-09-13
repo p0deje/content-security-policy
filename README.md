@@ -59,7 +59,7 @@ run MyApplication
 
 ## Status
 
-Content Security Policy is now implemented with `X-Content-Security-Policy` and `X-WebKit-CSP` headers.
+Content Security Policy is now implemented with `Content-Security-Policy` (official name), `X-Content-Security-Policy` (Firefox and IE) and `X-WebKit-CSP` (Chrome and Safari) headers.
 
 ## Copyright
 

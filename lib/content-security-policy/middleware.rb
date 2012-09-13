@@ -51,9 +51,17 @@ class ContentSecurityPolicy
 
     # prepare response headers names
     if @report_only
-      resp_headers = %w(X-Content-Security-Policy-Report-Only X-WebKit-CSP-Report-Only)
+      resp_headers = %w(
+        Content-Security-Policy-Report-Only
+        X-Content-Security-Policy-Report-Only
+        X-WebKit-CSP-Report-Only
+      )
     else
-      resp_headers = %w(X-Content-Security-Policy X-WebKit-CSP)
+      resp_headers = %w(
+        Content-Security-Policy
+        X-Content-Security-Policy
+        X-WebKit-CSP
+      )
     end
 
     # append response header

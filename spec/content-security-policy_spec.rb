@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe ContentSecurityPolicy do
-
   context 'configuration' do
     let(:app) do
       [200, { 'Content-Type' => 'text/plain' }, %w(ok)]
@@ -9,46 +8,46 @@ describe ContentSecurityPolicy do
 
     describe '#initialize' do
       it 'should raise error if directives hash is not present' do
-        lambda do
+        lambda {
           ContentSecurityPolicy.new(app)
-        end.should raise_error(ContentSecurityPolicy::NoDirectivesError, 'No directives were passed.')
+        }.should raise_error(ContentSecurityPolicy::NoDirectivesError, 'No directives were passed.')
       end
 
       it 'should raise error if default-src was not set' do
-        lambda do
+        lambda {
           options = { :directives => { 'script-src' => "'self'" }}
           ContentSecurityPolicy.new(app, options)
-        end.should raise_error(ContentSecurityPolicy::IncorrectDirectivesError, 'You have to set default-src directive.')
+        }.should raise_error(ContentSecurityPolicy::IncorrectDirectivesError, 'You have to set default-src directive.')
       end
 
       it 'should raise error if both policy-uri and other directive was set' do
-        lambda do
+        lambda {
           options = { :directives => { 'policy-uri' => 'policy.xml', 'script-src' => "'self'" }}
           ContentSecurityPolicy.new(app, options)
-        end.should raise_error(ContentSecurityPolicy::IncorrectDirectivesError, "You passed both policy-uri and other directives.")
+        }.should raise_error(ContentSecurityPolicy::IncorrectDirectivesError, "You passed both policy-uri and other directives.")
       end
 
       it 'should allow setting directives with ContentSecurityPolicy.configure' do
         ContentSecurityPolicy.configure { |csp| csp['default-src'] = "'self'" }
         ContentSecurityPolicy.should_receive(:directives).and_return('default-src' => '*')
 
-        lambda do
+        lambda {
           ContentSecurityPolicy.new(app)
-        end.should_not raise_error(ContentSecurityPolicy::NoDirectivesError, 'No directives were passed.')
+        }.should_not raise_error(ContentSecurityPolicy::NoDirectivesError, 'No directives were passed.')
       end
 
       it 'should allow passing hash of directives' do
-        lambda do
+        lambda {
           options = { :directives => { 'default-src' => "'self'" }}
           ContentSecurityPolicy.new(app, options)
-        end.should_not raise_error
+        }.should_not raise_error
       end
 
       it 'should allow passing report_only attribute' do
-        lambda do
+        lambda {
           options = { :directives => { 'default-src' => "'self'" }, :report_only => true }
           ContentSecurityPolicy.new(app, options)
-        end.should_not raise_error
+        }.should_not raise_error
       end
     end
 
@@ -66,8 +65,7 @@ describe ContentSecurityPolicy do
       it 'should append directives' do
         ContentSecurityPolicy.configure { |csp| csp['default-src'] = '*' }
         ContentSecurityPolicy.configure { |csp| csp['script-src']  = '*' }
-        ContentSecurityPolicy.directives.should == { 'default-src' => '*',
-                                                     'script-src'  => '*' }
+        ContentSecurityPolicy.directives.should == { 'default-src' => '*', 'script-src'  => '*' }
       end
 
       it 'should save report_only attribute' do
@@ -95,42 +93,17 @@ describe ContentSecurityPolicy do
     end
 
     describe '#call' do
-      it 'should respond with X-Content-Security-Policy HTTP response header' do
-        directives = "default-src *; img-src *.google.com; script-src 'self'"
-
-        header = get('/').headers['X-Content-Security-Policy']
-        header.should_not be_nil
-        header.should_not be_empty
-        header.should == directives
+      %w(Content-Security-Policy X-Content-Security-Policy X-WebKit-CSP).each do |header|
+        it "should respond with #{header} HTTP response header" do
+          get('/').headers[header].should == "default-src *; img-src *.google.com; script-src 'self'"
+        end
       end
 
-      it 'should respond with X-WebKit-CSP HTTP response header' do
-        directives = "default-src *; img-src *.google.com; script-src 'self'"
-
-        header = get('/').headers['X-WebKit-CSP']
-        header.should_not be_nil
-        header.should_not be_empty
-        header.should == directives
-      end
-
-      it 'should respond with X-Content-Security-Policy-Report-Only HTTP response header' do
-        ContentSecurityPolicy.configure { |csp| csp.report_only = true }
-        directives = "default-src *; img-src *.google.com; script-src 'self'"
-
-        header = get('/').headers['X-Content-Security-Policy-Report-Only']
-        header.should_not be_nil
-        header.should_not be_empty
-        header.should == directives
-      end
-
-      it 'should respond with X-WebKit-CSP HTTP response header' do
-        ContentSecurityPolicy.configure { |csp| csp.report_only = true }
-        directives = "default-src *; img-src *.google.com; script-src 'self'"
-
-        header = get('/').headers['X-WebKit-CSP-Report-Only']
-        header.should_not be_nil
-        header.should_not be_empty
-        header.should == directives
+      %w(Content-Security-Policy-Report-Only X-Content-Security-Policy-Report-Only X-WebKit-CSP-Report-Only).each do |header|
+        it "should respond with #{header}  HTTP response header" do
+          ContentSecurityPolicy.report_only = true
+          get('/').headers[header].should == "default-src *; img-src *.google.com; script-src 'self'"
+        end
       end
     end
   end
