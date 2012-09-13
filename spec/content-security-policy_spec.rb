@@ -13,13 +13,6 @@ describe ContentSecurityPolicy do
         }.should raise_error(ContentSecurityPolicy::NoDirectivesError, 'No directives were passed.')
       end
 
-      it 'should raise error if default-src was not set' do
-        lambda {
-          options = { :directives => { 'script-src' => "'self'" }}
-          ContentSecurityPolicy.new(app, options)
-        }.should raise_error(ContentSecurityPolicy::IncorrectDirectivesError, 'You have to set default-src directive.')
-      end
-
       it 'should raise error if both policy-uri and other directive was set' do
         lambda {
           options = { :directives => { 'policy-uri' => 'policy.xml', 'script-src' => "'self'" }}

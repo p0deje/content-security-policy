@@ -20,16 +20,13 @@ class ContentSecurityPolicy
   def initialize(app, options = {})
     @app = app
     @report_only = options[:report_only] || ContentSecurityPolicy.report_only
-    @directives = options[:directives] || ContentSecurityPolicy.directives
+    @directives  = options[:directives]  || ContentSecurityPolicy.directives
 
     @directives or raise NoDirectivesError, 'No directives were passed.'
 
     # make sure directives with policy-uri don't contain any other directives
     if @directives['policy-uri'] && @directives.keys.length > 1
       raise IncorrectDirectivesError, 'You passed both policy-uri and other directives.'
-    # make sure default-src is present
-    elsif !@directives['policy-uri'] && !@directives['default-src']
-      raise IncorrectDirectivesError, 'You have to set default-src directive.'
     end
   end
 
